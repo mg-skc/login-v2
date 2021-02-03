@@ -1,0 +1,23 @@
+{
+  "name": "login-v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "login-server-v2.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mg-skc/login-v2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mg-skc/login-v2/issues"
+  },
+  "homepage": "https://github.com/mg-skc/login-v2#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "node": "^15.7.0"
+  }
+}
