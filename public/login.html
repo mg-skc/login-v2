@@ -10,7 +10,7 @@
     <title>Waste Not Login</title>
 </head>
 <body>
-    <h1>Log In to  Waste Not</h1>
+    <h1>Log In to Waste Not</h1>
     <form id='login-form'>
         <input type="text" autocomplete='off' id='loginEmail' placeholder="Email" />
         <input type="password" autocomplete='off' id='loginPassword' placeholder="Password" />
@@ -46,7 +46,7 @@ async function loginUser(event){
         //all went fine 
         console.log("Got the token:  ",result.data)
         localStorage.setItem('token', result.data)
-        window.location.href = 'login.html';
+        // window.location.href = 'login.html';
      } else {
          alert(result.error)
      }

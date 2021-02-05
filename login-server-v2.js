@@ -7,7 +7,6 @@ const flash = require('express-flash')
 const session = require('express-session')
 const methodOverride = require('method-override')
 const jwt = require ('jsonwebtoken')
-const jwtSimple = require('jwt-simple')
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser')
 const JWT_Secret = process.env.JWT_SECRET;
@@ -147,7 +146,6 @@ app.post('/login', async (req, res) =>{
             name:user.name
         }, JWT_Secret, {expiresIn: '12h'})
 
-
         return res.json({status: 'ok', data: token})
     }
      res.json({status: 'error', error: 'Invalid username/password'})
@@ -156,6 +154,7 @@ app.post('/login', async (req, res) =>{
 
 app.post('/change-password', async (req, res) =>{
     console.log(req.body)
+    //console.log("Here is the header: "+req.headers.authorization)
     const {token, newpassword} = req.body
 
     if((!req.body.newpassword || typeof req.body.newpassword != 'string')){
@@ -168,7 +167,7 @@ app.post('/change-password', async (req, res) =>{
 
 
     try{
-    const user = jwt.verify(token, JWT_Secret, {expiresIn: '12h'})
+    const user = jwt.verify(token, JWT_Secret)
     console.log(user)
     const _id = user.id
     const hashedPassword = await bcrypt.hash(newpassword,10)
