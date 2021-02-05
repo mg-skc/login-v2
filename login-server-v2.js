@@ -79,6 +79,7 @@ app.use (cookieParser())
 
 app.post('/register', async (req, res) =>{
     console.log(req.body)
+    var email = req.body.email
 
     if((!req.body.name || typeof req.body.name != 'string')){
         return res.json({status: 'error', error: 'Invalid name - name is a required field'})
@@ -88,7 +89,13 @@ app.post('/register', async (req, res) =>{
         return res.json({status: 'error', error: 'Invalid email - email is a required field.'})
     }
 
-    if((!req.body.phone || typeof req.body.phone != 'string')){
+    const mailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+    if (email.match(mailFormat)===null){ 
+        return res.json({status: 'error', error: "You have entered an invalid email address!"})
+    }
+
+    if ((!req.body.phone || typeof req.body.phone != 'string')){
         return res.json({status: 'error', error: 'Invalid phone - phone is a required field.'})
     }
 
@@ -123,6 +130,7 @@ app.post('/register', async (req, res) =>{
     }
 })
 
+
 app.post('/login', async (req, res) =>{
     console.log(req.body)
     const {email, password} = req.body
@@ -137,7 +145,7 @@ app.post('/login', async (req, res) =>{
         const token = jwt.sign({
             id: user._id, 
             name:user.name
-        }, JWT_Secret)
+        }, JWT_Secret, {expiresIn: '12h'})
 
 
         return res.json({status: 'ok', data: token})
@@ -150,7 +158,7 @@ app.post('/change-password', async (req, res) =>{
     console.log(req.body)
     const {token, newpassword} = req.body
 
-    if((!req.body.newpassword || typeof req.body.password != 'string')){
+    if((!req.body.newpassword || typeof req.body.newpassword != 'string')){
         return res.json({status: 'error', error: 'Invalid password - password is a required field.'})
     }
 
@@ -160,7 +168,7 @@ app.post('/change-password', async (req, res) =>{
 
 
     try{
-    const user = jwt.verify(token, JWT_Secret)
+    const user = jwt.verify(token, JWT_Secret, {expiresIn: '12h'})
     console.log(user)
     const _id = user.id
     const hashedPassword = await bcrypt.hash(newpassword,10)
@@ -174,6 +182,7 @@ app.post('/change-password', async (req, res) =>{
     } catch (error){
     res.json({status: 'error', error: 'Invalid token'})
     }
+})
 
 app.listen(3000,()=>{
     console.log('Server up at 3000')

@@ -18,6 +18,7 @@
         <input type="password" autocomplete='off' id='regPassword' placeholder="Password" />
         <input type="submit" value="Register" />
     </form>
+    <input type="checkbox" onclick="showPassword()">Show Password
     <br>
     <br>
     <a href="./login.html" type='button' id='goToLogin'>Login</a>
@@ -57,6 +58,16 @@ async function registerUser(event){
          alert(result.error)
      }
     }
+</script>
+<script>
+    function showPassword() {
+  var x = document.getElementById("regPassword");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
 </script>
 </body>
 </html>
