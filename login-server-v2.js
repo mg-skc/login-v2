@@ -2,9 +2,6 @@ require('dotenv').config();
 const express = require('express')
 const app = express()
 const bcrypt = require('bcrypt')
-// const passport = require('passport')
-const flash = require('express-flash')
-const session = require('express-session')
 const methodOverride = require('method-override')
 const jwt = require ('jsonwebtoken')
 const bodyParser = require("body-parser");
@@ -51,27 +48,9 @@ app.use(
         path.join(__dirname, 'public')));
 
 
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({extended:true}));
-
-
-
-//connect Mongoose - here  : HTML can do a post in the code bypassing the js file (per Jeff K)
-//THIS WILL NEED TO BE CHANGED TO POSTS WITH DATABASE STORAGE FOR PRODUCTION!!!
-//const users = []
-
-//app.set('view-engine', 'ejs')
 app.use(express.urlencoded({ extended: false}))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-// app.use(flash())
-// app.use(session({
-//     secret: process.env.SESSION_SECRET,
-//     resave: false,
-//     saveUninitialized: false
-// }))
-//app.use(passport.initialize())
-// app.use(passport.session())
 app.use(methodOverride('_method'))
 app.use(express.json())
 app.use (cookieParser())
@@ -143,7 +122,8 @@ app.post('/login', async (req, res) =>{
     if(await bcrypt.compare(password, user.password)){
         const token = jwt.sign({
             id: user._id, 
-            name:user.name
+            name:user.name,
+            user_role:user.user_role
         }, JWT_Secret, {expiresIn: '12h'})
 
         return res.json({status: 'ok', data: token})
