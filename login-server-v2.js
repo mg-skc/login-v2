@@ -5,8 +5,11 @@ const bcrypt = require('bcrypt')
 const methodOverride = require('method-override')
 const jwt = require ('jsonwebtoken')
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser')
 const JWT_Secret = process.env.JWT_SECRET;
+const JWT_Refresh = process.env.REFRESH_JWT_SECRET;
+const JWT_Refresh_Tokens = [];
+
+
 
 //require mongoose-translates Node.js
 const mongoose = require ("mongoose");
@@ -53,7 +56,36 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(methodOverride('_method'))
 app.use(express.json())
-app.use (cookieParser())
+
+//!     JWT AUTH MIDDLEWARE
+//!     JWT AUTH MIDDLEWARE
+//!     JWT AUTH MIDDLEWARE
+
+
+const authenticateJWT = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    if (authHeader) {
+        const token = authHeader.split(' ')[1];
+
+        jwt.verify(token, JWT_Secret, (err, user) => {
+            if (err) {
+                return res.sendStatus(403);
+            }
+
+            req.user = user;
+            next();
+        });
+    } else {
+        res.sendStatus(401);
+    }
+};
+
+
+//!   USER SELF REGISTER
+//!   USER SELF REGISTER
+//!   USER SELF REGISTER
+//!   USER SELF REGISTER
 
 app.post('/register', async (req, res) =>{
     console.log(req.body)
@@ -109,6 +141,11 @@ app.post('/register', async (req, res) =>{
 })
 
 
+//!     USER LOGIN
+//!     USER LOGIN
+//!     USER LOGIN
+
+
 app.post('/login', async (req, res) =>{
     console.log(req.body)
     const {email, password} = req.body
@@ -126,13 +163,21 @@ app.post('/login', async (req, res) =>{
             user_role:user.user_role
         }, JWT_Secret, {expiresIn: '12h'})
 
+
         return res.json({status: 'ok', data: token})
     }
      res.json({status: 'error', error: 'Invalid username/password'})
 
 })
 
-app.post('/change-password', async (req, res) =>{
+
+//!     USER SELF CHANGE PASSWORD
+//!     USER SELF CHANGE PASSWORD
+//!     USER SELF CHANGE PASSWORD
+
+
+
+app.post('/change-password', authenticateJWT, async (req, res) =>{
     console.log(req.body)
     //console.log("Here is the header: "+req.headers.authorization)
     const {token, newpassword} = req.body
@@ -162,6 +207,10 @@ app.post('/change-password', async (req, res) =>{
     res.json({status: 'error', error: 'Invalid token'})
     }
 })
+
+//*     LISTEN AT PORT 3000 AND RETURN MESSAGE
+//*     LISTEN AT PORT 3000 AND RETURN MESSAGE
+//*     LISTEN AT PORT 3000 AND RETURN MESSAGE
 
 app.listen(3000,()=>{
     console.log('Server up at 3000')
