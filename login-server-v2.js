@@ -7,7 +7,7 @@ const jwt = require ('jsonwebtoken')
 const bodyParser = require("body-parser");
 const JWT_Secret = process.env.JWT_SECRET;
 const JWT_Refresh = process.env.REFRESH_JWT_SECRET;
-const JWT_Refresh_Tokens = [];
+
 
 
 
@@ -22,6 +22,8 @@ var User = require ("./models/userDatabase.js");
 
 //add path library
 const path = require("path");
+const { response } = require('express');
+const { default: jwtDecode } = require('jwt-decode');
 
 //declare port to connect t0
 const port = 3000;
@@ -57,29 +59,6 @@ app.use(bodyParser.json())
 app.use(methodOverride('_method'))
 app.use(express.json())
 
-//!     JWT AUTH MIDDLEWARE
-//!     JWT AUTH MIDDLEWARE
-//!     JWT AUTH MIDDLEWARE
-
-
-const authenticateJWT = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-
-    if (authHeader) {
-        const token = authHeader.split(' ')[1];
-
-        jwt.verify(token, JWT_Secret, (err, user) => {
-            if (err) {
-                return res.sendStatus(403);
-            }
-
-            req.user = user;
-            next();
-        });
-    } else {
-        res.sendStatus(401);
-    }
-};
 
 
 //!   USER SELF REGISTER
@@ -157,19 +136,30 @@ app.post('/login', async (req, res) =>{
     }
 
     if(await bcrypt.compare(password, user.password)){
+        const logUser_Role = user.user_role
         const token = jwt.sign({
             id: user._id, 
             name:user.name,
             user_role:user.user_role
         }, JWT_Secret, {expiresIn: '12h'})
-
-
         return res.json({status: 'ok', data: token})
+        
     }
      res.json({status: 'error', error: 'Invalid username/password'})
 
 })
 
+//! FIND USER FOR ROLE BASED PERMISSIONS
+app.get('/users/:email', (request, response) => {
+    console.log('heres email from client: ',request.params.email);
+    User.findOne({email: `${request.params.email}`}).exec((err, user) => {
+        if (err) return console.error(err);
+        console.log("here's the user info:  ", user)
+        console.log('heres user role:  ',user.user_role)
+        response.send(user);
+    })
+});
+
 
 //!     USER SELF CHANGE PASSWORD
 //!     USER SELF CHANGE PASSWORD
@@ -177,9 +167,8 @@ app.post('/login', async (req, res) =>{
 
 
 
-app.post('/change-password', authenticateJWT, async (req, res) =>{
+app.post('/change-password', async (req, res) =>{
     console.log(req.body)
-    //console.log("Here is the header: "+req.headers.authorization)
     const {token, newpassword} = req.body
 
     if((!req.body.newpassword || typeof req.body.newpassword != 'string')){
@@ -215,3 +204,5 @@ app.post('/change-password', authenticateJWT, async (req, res) =>{
 app.listen(3000,()=>{
     console.log('Server up at 3000')
 })
+
+module.exports = jwtDecode;

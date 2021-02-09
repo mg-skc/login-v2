@@ -18,6 +18,7 @@
                 <h1>Waste Not</h1>
             </div>
         </div>
+        <div id='loggedUserRole' data-id = ""></div>
 <!-- LOG IN SECTION -->
         <div id = "login" class = "container h-100">
             <div class = "row">
@@ -49,37 +50,71 @@
         </div>  
 
 <!-- ADMIN SECTION -->
-    
-        <div id = "admin" class = "container h-100" style="display: none">
+<p>Hidden Admin Section</p>   
+<div id = "admin" class = "container h-100" style="display: none">
+    <div class = "row">
+        <div class = "col">
+            <a class = 'btn btn-primary' href = "addItem.html" role = "button" >Add Item</a>
+        </div>
+        <div class="col">
+            <a class='btn btn-primary' href='user-updates.html' id = "addUpdateUser">User Menu</a>
+        </div>
+    </div>     
+    <div class="row">
+        <div class="col">       
+            <a class='btn btn-primary' href='location.html' id = "addLocation">Add Location</a>
+        </div>
+        <div class="col">    
+            <a class='button btn btn-primary' href='workDayMenu.html'>Go to Work</a>
+        </div>
+    </div>
+
+<div  class=" backToLogIn container h=100">
+    <div class="row">
+        <div class="col">
+            <a class = 'button btn btn-primary' onclick="backToLogIn()">Back to Log In</a>
+        </div>
+    </div>
+</div>
+</div>        
+<!-- WORK DAY SECTION -->
+<p>Hidden Barista Menu</p>
+<div id = "workDayMenu" class = "container h-100" style="display: none">
+    <div class = "row">
+        <div class = "col">
+            <a class = 'btn btn-primary' href = "inventoryUpdate.html" role = "button" >Update Inventory</a>
+        </div>
+       
+        <div class="col">
+            <a class = 'btn btn-primary' href = "wastePanic.html" role = "button" >Go To Work</a>
+        </div>
+    </div>
+
+<div class=" backToLogIn container h=100">
+    <div class="row">
+        <div class="col">
+                <a class = 'button btn btn-primary' onclick="backToLogIn()">Back To Log In</a>
+        </div>
+    </div>
+</div> 
+</div>
+
+        <!-- baker section -->
+        <p>Hidden Baker Menu</p>
+        <div id="bakerSection" class="container h =100" style="display: none">
             <div class = "row">
-                <div class = "col-lg-6">
+                <div class = "col">
                     <a class = 'btn btn-primary' href = "addItem.html" role = "button" >Add Item Menu</a>
                 </div>
-                <div class="col-lg-6">
-                    <a class='btn btn-primary' href='/user-updates.html' id = "addUpdateUser">Add or Update User</a>
-                </div>
-            </div>     
-            <div class="row">
-                <div class="col-lg-6">       
-                    <button type="submit" id = "addLocation">Add Location</button>
-                </div>
-                <div class="col-lg-6">    
-                    <button type="submit" id = "goToWorkAdmin" class = 'btn btn-primary' onclick = "displayWorkDayMenu()">Go to Work Day</button>
-                </div>
-            </div>
-        </div>
+            </div>    
         
-<!-- WORK DAY SECTION -->
-        <div id = "workDayMenu" class = "container h-100" style="display: none">
-            <div class = "row">
-                <div class = "col-lg-6">
-                    <a class = 'btn btn-primary' href = "inventoryUpdate.html" role = "button" >Update Inventory</a>
-                </div>
-               
-                <div class="col-lg-6">
-                    <a class = 'btn btn-primary' href = "wastePanic.html" role = "button" >Go To Work</a>
+        <div class=" backToLogIn container h=100">
+            <div class="row">
+                <div class="col">
+                        <a class = 'button btn btn-primary' onclick="backToLogIn()">Back To Log In</a>
                 </div>
             </div>
+        </div> div>
         </div> 
 <script>
 const form = document.getElementById('login-form')
@@ -89,6 +124,7 @@ async function loginUser(event){
     event.preventDefault()
     const email= document.getElementById('loginEmail').value
     const password= document.getElementById('loginPassword').value
+  
 
     console.log(email)
     console.log(password)
@@ -97,7 +133,6 @@ async function loginUser(event){
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            //'Authorization':`Bearer ${jwttoken}`
         },
         body: JSON.stringify({
             email,
@@ -106,15 +141,96 @@ async function loginUser(event){
     }).then((res) => res.json())
      if (result.status === 'ok'){
         //all went fine 
+        
         console.log("Got the token:  ",result.data)
-        //console.log('Got the refresh:  ',result.data)
         localStorage.setItem('token', result.data)
-        localStorage.setItem('refreshToken', result.data)
+        getUser()
+
        //Need to add show/hide here for admin/barista stuff.
      } else {
          alert(result.error)
      }
     }
+</script>
+<script>
+        async function getUser(){
+        const logEmail= document.getElementById('loginEmail').value
+        console.log('here is the get email: ', logEmail)
+
+        const requestOptions = {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'}
+        }
+        const editLookupEmail = logEmail;
+        const response = await fetch('/users/' + editLookupEmail, requestOptions);
+        
+        const body = await response.json();
+        if (response.status != 200){
+            throw Error('Error!');  
+        }
+        console.log(body);
+        console.log(body.user_role)
+        const userBodyRole = body.user_role
+        console.log('heres userBodyRole at 172: ', userBodyRole)
+        setIt(userBodyRole)
+        //return body;
+        }
+        // setIt(logBody.user_role)
+
+        function setIt (userBodyRole){
+        const loggedUser_Role = document.getElementById('loggedUserRole')
+        const loginUser_Role = userBodyRole
+        loggedUser_Role.setAttribute('data-id', loginUser_Role)
+        console.log(loginUser_Role)
+        }
+</script>
+<script>
+//     function showUserMenus()
+//     const role4Menus = document.getElementById('loggedUserRole').getAttribute('data-id')
+//     switch (role4Menus) {
+//             case "None":
+//             window.location.href = './get-permissions.html'
+//                 break;
+//             case "Barista":
+//             displayWorkDayMenu();
+//             case "Bakery":
+//             displayBakerMenu();
+//                 break;
+//             case "Admin":
+//             displayAdmin();
+//                 break;    
+//             default:
+//                 console.log("No User Role value found - error!")
+//                 break;
+//         }
+
+//         //function to display admin section
+// function displayAdmin(){
+// //if admin yes do this
+//     document.getElementById("login").style.display = "none";
+//     document.getElementById("admin").style.display = "block";
+// }
+// //function to display worker menu
+// function displayWorkDayMenu(){
+//     //if barista do this
+//     document.getElementById("login").style.display = "none";
+//     document.getElementById("workDayMenu").style.display = "block";
+// }
+// //function to display baker menu
+// function displayBakerMenu(){
+
+//     //if baker do this
+//     document.getElementById("login").style.display = "none";
+//     document.getElementById("bakerSection").style.display = "block"; 
+// }
+// //function to go back to log in
+// function backToLogIn(){
+//     document.getElementById("bakerSection").style.display = "none";
+//     document.getElementById("workDayMenu").style.display = "none"; 
+//     document.getElementById("admin").style.display = "none";
+//     document.getElementById("login").style.display = "block";
+
+// }
 </script>
 <script>
     function showPassword() {
@@ -126,8 +242,39 @@ async function loginUser(event){
   }
 }
 </script>
+<script>
+    //function to display admin section
+function displayAdmin(){
+//if admin yes do this
+    document.getElementById("login").style.display = "none";
+    document.getElementById("admin").style.display = "block";
+}
+//function to display worker menu
+function displayWorkDayMenu(){
+    //if barista do this
+    document.getElementById("login").style.display = "none";
+    document.getElementById("workDayMenu").style.display = "block";
+}
+//function to display baker menu
+function displayBakerMenu(){
+
+    //if baker do this
+    document.getElementById("login").style.display = "none";
+    document.getElementById("bakerSection").style.display = "block"; 
+}
+//function to go back to log in
+function backToLogIn(){
+    document.getElementById("bakerSection").style.display = "none";
+    document.getElementById("workDayMenu").style.display = "none"; 
+    document.getElementById("admin").style.display = "none";
+    document.getElementById("login").style.display = "block";
+
+}
+</script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>   
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>  
+    <!-- <script src="../login-server-v2.js"></script> -->
+
 </body>
 </html>
