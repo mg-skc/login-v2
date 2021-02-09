@@ -37,7 +37,7 @@
             <br>
             <a href="./register_v2.html" type='button' id='goToRegister'>Register</a>
         </div>
-        <div class="container"  id = "toAdminMenu">      
+        <!-- <div class="container"  id = "toAdminMenu">      
             <div class = "row"> 
                 <div class = "col">        
                     <a class = 'btn btn-primary' href = "adminMenu.html" role = "button" >Admin Menu</a>
@@ -46,7 +46,7 @@
                 <a class = 'btn btn-primary' href = "workDayMenu.html" role = "button" >Work Day Menu</a>
                 </div>
             </div>
-        </div>
+        </div> -->
         </div>  
 
 <!-- ADMIN SECTION -->
@@ -182,55 +182,57 @@ async function loginUser(event){
         const loginUser_Role = userBodyRole
         loggedUser_Role.setAttribute('data-id', loginUser_Role)
         console.log(loginUser_Role)
+        showUserMenus();
         }
 </script>
 <script>
-//     function showUserMenus()
-//     const role4Menus = document.getElementById('loggedUserRole').getAttribute('data-id')
-//     switch (role4Menus) {
-//             case "None":
-//             window.location.href = './get-permissions.html'
-//                 break;
-//             case "Barista":
-//             displayWorkDayMenu();
-//             case "Bakery":
-//             displayBakerMenu();
-//                 break;
-//             case "Admin":
-//             displayAdmin();
-//                 break;    
-//             default:
-//                 console.log("No User Role value found - error!")
-//                 break;
-//         }
+    function showUserMenus(){
+    var role4Menus = document.getElementById('loggedUserRole').getAttribute('data-id');
+    switch (role4Menus) {
+            case "None":
+            window.location.href = './get-permissions.html'
+                break;
+            case "Barista":
+            displayWorkDayMenu();
+            case "Bakery":
+            displayBakerMenu();
+                break;
+            case "Admin":
+            displayAdmin();
+                break;    
+            default:
+                console.log("No User Role value found - error!")
+                break;
+            }
+        }
 
-//         //function to display admin section
-// function displayAdmin(){
-// //if admin yes do this
-//     document.getElementById("login").style.display = "none";
-//     document.getElementById("admin").style.display = "block";
-// }
-// //function to display worker menu
-// function displayWorkDayMenu(){
-//     //if barista do this
-//     document.getElementById("login").style.display = "none";
-//     document.getElementById("workDayMenu").style.display = "block";
-// }
-// //function to display baker menu
-// function displayBakerMenu(){
+        //function to display admin section
+function displayAdmin(){
+//if admin yes do this
+    document.getElementById("login").style.display = "none";
+    document.getElementById("admin").style.display = "block";
+}
+//function to display worker menu
+function displayWorkDayMenu(){
+    //if barista do this
+    document.getElementById("login").style.display = "none";
+    document.getElementById("workDayMenu").style.display = "block";
+}
+//function to display baker menu
+function displayBakerMenu(){
 
-//     //if baker do this
-//     document.getElementById("login").style.display = "none";
-//     document.getElementById("bakerSection").style.display = "block"; 
-// }
-// //function to go back to log in
-// function backToLogIn(){
-//     document.getElementById("bakerSection").style.display = "none";
-//     document.getElementById("workDayMenu").style.display = "none"; 
-//     document.getElementById("admin").style.display = "none";
-//     document.getElementById("login").style.display = "block";
+    //if baker do this
+    document.getElementById("login").style.display = "none";
+    document.getElementById("bakerSection").style.display = "block"; 
+}
+//function to go back to log in
+function backToLogIn(){
+    document.getElementById("bakerSection").style.display = "none";
+    document.getElementById("workDayMenu").style.display = "none"; 
+    document.getElementById("admin").style.display = "none";
+    document.getElementById("login").style.display = "block";
 
-// }
+}
 </script>
 <script>
     function showPassword() {
